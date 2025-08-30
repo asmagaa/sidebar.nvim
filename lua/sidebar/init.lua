@@ -7,3 +7,11 @@ function M.setup(opts)
     M.buf = nil
     M.win = nil
 end
+
+function M.toggle()
+    if M.win and vim.api.nvim_win_is_valid(M.win) then
+        vim.api.nvim_win_close(M.win, true)
+        M.win = nil
+        return
+    end
+end
