@@ -92,3 +92,36 @@ function Window.toggle()
         Window.open()
     end
 end
+
+function Window.reposition()
+    if not Window.is_open() then 
+        return
+    end
+    local width = state.cfg.width
+    local col = calc_col(width, state.cfg.position)
+    local height = math.max(vim.o.lines - 2, 1)
+    vim.api.nvim_win_set_config(state.win, {
+        relative = "editor",
+        width = width,
+        height = height,
+        row = 1,
+        col = col,
+        style = "minimal",
+        border = state.cfg.border,
+    })
+end
+
+function Window.render(lines)
+    if not throttle_ok(state.cfg.throttle_ms) then
+        return
+    end
+    local buf = ensure_buf()
+    if not Window.is_open() then
+        return
+    end
+    vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+end
+
+return Window
