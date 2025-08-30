@@ -45,3 +45,42 @@ local function ensure_buf()
     vim.api.nvim_set_option_value("filetype", "sidebar", { buf = state.buf })
     return state.buf
 end
+
+function Window.is_open()
+    return state.win and vim.api.nvim_win_is_valid(state.win)
+end
+
+function Window.open()
+    if Window.is_open() then
+        return state.win
+    end
+    local buf = ensure_buf()
+    local width = state.cfg.width
+    local col = calc_col(width, state.cfg.position)
+    local height = math.max(vim.o.lines - 2, 1)
+
+    state.win = vim.api.nvim_open_win(buf, false, {
+        relative = "editor",
+        width = width,
+        height = height,
+        row = 1,
+        col = col,
+        style = "minimal",
+        border = state.cfg.border,
+        focusable = false,
+        noautocmd = true,
+    })
+    pcall(vim.api.nvim_set_option_value, "winhl", state.cfg.winhl, { win = state.win })
+    pcall(vim.api.nvim_set_option_value, "winfixwidth", true, { win = state.win })
+    pcall(vim.api.nvim_set_option_value, "number", false, { win = state.win })
+    pcall(vim.api.nvim_set_option_value, "relativenumber", false, { win = state.win })
+    pcall(vim.api.nvim_set_option_value, "cursorline", false, { win = state.win})
+    return state.win
+end
+
+function Window.close()
+    if Window.is_open() then
+        pcall(vim.api.nvim_win_close, state.win, true)
+    end
+    state.win = nil
+end
