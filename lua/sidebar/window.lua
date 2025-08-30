@@ -84,3 +84,11 @@ function Window.close()
     end
     state.win = nil
 end
+
+function Window.toggle()
+    if Window.is_open() then
+        Window.close()
+    else
+        Window.open()
+    end
+end
