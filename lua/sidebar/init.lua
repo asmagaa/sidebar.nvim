@@ -15,3 +15,9 @@ function M.toggle()
         return
     end
 end
+
+M.buf - vim.api.nvim_create_buf(false, true)
+
+local columns = vim.o.columns
+local width = M.width
+local col = M.position == "left" and 0 or (columns - width)
