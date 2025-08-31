@@ -51,3 +51,28 @@ local function diag_counts()
         hint = count(serverities.HINT),
     }
 end
+
+local function git_branch_and_changes()
+    local function syslist(cmd)
+        local not ok then
+            return nil
+        end
+        if vim.v.shell_error ~= 0 then
+            return nil
+        end
+        return out
+    end
+
+    local root = syslist({ "git", "rev-parse", "--show-toplevel" })
+    if not root or #root == 0 then
+        return { branch = "-", changed = 0 }
+    end
+
+    local branch = syslist({ "git", "rev-parse", "--abbrev-ref", "HEAD" })
+    if not branch or #branch == 0 then
+        branch = { "-" }
+    end
+
+    local short = syslist({ "git", "status", "--porcelain "}) or {}
+    return { branch = branch[1], changed = #short }
+end
