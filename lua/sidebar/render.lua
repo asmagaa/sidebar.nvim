@@ -76,3 +76,40 @@ local function git_branch_and_changes()
     local short = syslist({ "git", "status", "--porcelain "}) or {}
     return { branch = branch[1], changed = #short }
 end
+
+function M.build_lines(cfg)
+    local lines = {}
+    local path = current_filepath()
+    local line_count = vim.api.nvim_buf_line_count(0)
+    local wc = vim.fn.wordcount()
+    local words = wc.words or 0
+    local filetype = vim.bo.filetype ~= "" and vim.bo.filetype or "plain"
+    local modified = vim.bo.modified and "yes" or "no"
+    local encoding = vim.o.encoding
+    local ff = vim.bo.fileformat
+    local size = human_size(file_size_safe(path))
+    local diag = diag_counts()
+    local git = git_branch_and_changes()
+
+    local function sep()
+        table.insert(lines, string.rep("-", cfg.width - 2 > 0 and (cfg.width - 2) or 10))
+    end
+
+    table.insert(lines, cfg.title)
+    sep()
+    table.insert(lines, ("File: %s"):format(path))
+    table.insert(lines, ("Type: %s  Modified: %s"):format(filetype, modified))
+    table.insert(lines, ("Size: %s  Lines: %d   Words: %d"):format(size, line_count, words))
+    table.insert(lines, ("Encoding: %s  EOL: %s"):format(encoding, ff))
+    sep()
+    table.insert(lines, ("Git: %s   Changed: %d"):format(git.branch, git.changed))
+    table.insert(lines, ("Diagnostics  E:%d  W:%d H:%d"):format(diag.err, diag.warn, diag.info, diag.hint))
+    sep()
+    table.insert(lines, "Tips:")
+    table.insert(lines, "   :SidebarToggle  -  show/hide")
+    table.insert(lines, "   config width/position/border")
+
+    return lines
+end
+
+return M
