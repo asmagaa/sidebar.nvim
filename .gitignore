@@ -1,0 +1,5 @@
+*.swp
+*.swo
+*.bak
+Session.vim
+.DS_Store
