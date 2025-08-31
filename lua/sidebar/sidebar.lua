@@ -7,7 +7,7 @@ if not mod.get_config then
     return
 end
 
-if modget_config() == nil then
+if mod.get_config() == nil then
     pcall(mod.setup, {})
 end
 
