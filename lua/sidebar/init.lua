@@ -38,3 +38,29 @@ local function setup_autocmds(cfg)
         })
     end
 end
+
+function M.setup(user_cfg)
+    current_cfg = cfgmod.extend(user_cfg)
+    window.setup(current_cfg)
+    setup_autocmds(current_cfg)
+end
+
+function M.toggle()
+    window.toggle()
+    _render()
+end
+
+function M.open()
+    window.open()
+    _render()
+end
+
+function M.close()
+    window.close()
+end
+
+function M.get_config()
+    return current_cfg or cfgmod.defaults
+end
+
+return M
