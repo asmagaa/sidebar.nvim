@@ -2,7 +2,7 @@ local M = {}
 
 M.defaults = {
     width = 30,
-    position = "left",
+    position = "right",
     border = "single",
     title = "sidebar.nvim",
     update_events = {
